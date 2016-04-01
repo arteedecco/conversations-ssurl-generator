@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+  <head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>Conversations Submission Link Generator</title>
+
+    <script src="./lib/js/jquery-2.2.2.js"></script>
+    <script src="./lib/js/bootstrap.min.js"></script>
+    <script src="./lib/js/knockout-3.4.0.js"></script>
+    <link href="./lib/css/bootstrap.min.css" rel="stylesheet">
+
+  </head>
+  <body>
+
+    <div class="container">
+
+      <div class="jumbotron">
+        <h1>Submission Link Generator</h1>
+        <p>self is a web-based tool that allows you to generate perfectly formatted submission links for Conversations.</p>
+        
+        <a style="word-break: break-all;" data-bind="attr: { href: ssurl }">
+          <span data-bind="text: ssurl"></span>
+        </a>
+
+        <h2>Config</h2>
+        <form class="form-horizontal">
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">Protocol:</label>
+            <div class="col-sm-10">
+              <label for="protocol_http" class="radio-inline">
+                <input type="radio" name="protocolOptions" id="protocol_http" value="http" data-bind="checked: protocol"> http
+              </label>
+              <label for="protocol_https" class="radio-inline">
+                <input type="radio" name="protocolOptions" id="protocol_https" value="https" data-bind="checked: protocol"> https (SSL)
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">Environment:</label>
+            <div class="col-sm-10">
+              <label for="environment_staging" class="radio-inline">
+                <input type="radio" name="environmentOptions" id="environment_staging" value="bvstaging" data-bind="checked: environment"> staging
+              </label>
+              <label for="environment_production" class="radio-inline">
+                <input type="radio" name="environmentOptions" id="environment_production" value="" data-bind="checked: environment"> production
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="inputInstance" class="col-sm-2 control-label">Instance:</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="inputInstance" name="instance" placeholder="ExampleClient" data-bind="value: instance, valueUpdate: 'afterkeydown'">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="inputDeploymentzone" class="col-sm-2 control-label">Deployment Zone:</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="inputDeploymentzone" name="deploymentzone" placeholder="Main%20Site" data-bind="value: deploymentzone, valueUpdate: 'afterkeydown'">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="inputLocale" class="col-sm-2 control-label">Locale:</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="inputLocale" name="locale" placeholder="en_US" data-bind="value: locale, valueUpdate: 'afterkeydown'">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label">bvaction:</label>
+            <div class="col-sm-10">
+              <label for="environment_staging" class="radio-inline">
+                <input type="radio" name="bvactionOptions" id="bvaction_submit" value="rr_submit_review" data-bind="checked: bvaction"> normal submission
+              </label>
+              <label for="environment_production" class="radio-inline">
+                <input type="radio" name="bvactionOptions" id="bvaction_generic" value="rr_submit_generic" disabled data-bind="checked: bvaction"> generic review submission (product picker) [future feature]
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="inputBvproductId" class="col-sm-2 control-label">Locale:</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="inputBvproductId" name="bvproductId" placeholder="product1" data-bind="value: bvproductId, valueUpdate: 'afterkeydown'">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="inputBvcampaignId" class="col-sm-2 control-label">Locale:</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="inputBvcampaignId" name="bvcampaignId" placeholder="Example_Campaign_Id" data-bind="value: bvcampaignId, valueUpdate: 'afterkeydown'">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="enabledBvinjecteddata" class="col-sm-2 control-label">Data Injection:</label>
+            <div class="col-sm-10">
+              <label for="enabledBvinjecteddata" class="checkbox-inline">
+                <input type="checkbox" name="enabledBvinjecteddata" id="enabledBvinjecteddata" data-bind="checked: enabledBvinjecteddata"> Enable Data Injection
+              </label>
+            </div>
+          </div>
+
+        </form>
+
+        <div data-bind="if: enabledBvinjecteddata">
+
+          <form class="form-inline">
+
+            <div class="col-sm-offset-2  form-group">
+              <input type="text" class="form-control" placeholder="QuestionID" data-bind="value: newQuestionId, valueUpdate: 'afterkeydown'">
+              <input type="text" class="form-control" placeholder="ResponseID" data-bind="value: newResponseId, valueUpdate: 'afterkeydown'">
+              <button type="button" class="btn btn-primary btn-sm" data-bind="click: addBvinjecteddataParameter">add</button>
+            </div>
+
+          </form>
+
+          <hr>
+
+          <div data-bind="template: { name: 'bvinjecteddata-template', foreach: bvinjecteddata }">
+          
+          </div>
+
+        </div>
+
+      </div><!-- end jumbotron -->
+
+    </div><!-- end container -->
+
+    <script type="text/html" id="bvinjecteddata-template">
+      <form class="form-inline">
+        <div class="col-sm-offset-2 form-group" >
+          <input type="text" class="form-control" data-bind="value: questionId, valueUpdate: 'afterkeydown'">
+          <input type="text" class="form-control" data-bind="value: responseId, valueUpdate: 'afterkeydown'">
+          <button type="button" class="btn btn-danger btn-sm" data-bind="click: $parent.removeBvinjecteddataParameter">remove</button>    
+        </div>
+      </form>
+    </script>
+
+    <script>
+      function myViewModel() {
+        var self = this;
+
+        self.protocol       = ko.observable('http');
+        self.domain         = ko.observable('display.ugc.bazaarvoice.com');
+        self.environment    = ko.observable('bvstaging');
+        self.instance       = ko.observable('Kleenex');
+        self.deploymentzone = ko.observable('KleenexCRM');
+        self.locale         = ko.observable('en_US');
+        self.resource       = ko.observable('container.htm');
+        self.bvaction      = ko.observable('rr_submit_review');
+        self.bvproductId    = ko.observable('product1');
+        self.bvcampaignId   = ko.observable('Example_Campaign_Id');
+
+        self.newQuestionId  = ko.observable();
+        self.newResponseId  = ko.observable();
+
+        self.enabledBvinjecteddata = ko.observable(true); 
+        self.bvinjecteddata = ko.observableArray([
+          {
+            questionId: 'IncentivizedReview',
+            responseId: 'True'
+          }
+        ]);
+
+        self.ssurl          = ko.computed(function() {
+          let protocol       = self.protocol() + '://',
+              domain         = self.domain() + '/',
+              environment    = (self.environment() === "") ? "" : self.environment() + '/',
+              instance       = self.instance() + '/',
+              deploymentzone = (self.deploymentzone() === "") ? "Main%20Site" + '/' : self.deploymentzone() + '/',
+              locale         = (self.locale() === "") ? "en_US" + '/' : self.locale() + '/',
+              resource       = self.resource() + '?',
+              bvaction      = 'bvaction=' + self.bvaction(),
+              bvproductId    = '&vproductId=' + self.bvproductId(),
+              bvcampaignId   = '&bvcampaignId=' + self.bvcampaignId(),
+              bvinjecteddata = '';
+
+          if (self.bvinjecteddata().length > 0) {
+            let params = self.bvinjecteddata(),
+                pairs = {};
+            // bvinjecteddata = '&bvinjecteddata=' + encodeURIComponent('{' + JSON.stringify(params) + '}');
+            params.forEach(function(param, index, data) {
+              console.debug('index:',index, 'param:',param, 'data:', data);
+              pairs[param.questionId] = param.responseId;
+            });
+            bvinjecteddata = '&bvinjecteddata=' + encodeURIComponent(JSON.stringify(pairs));
+            console.debug(bvinjecteddata);
+          }
+
+          return protocol + domain + environment + 'static/' + instance + deploymentzone + locale + resource + bvaction + bvproductId + bvcampaignId + bvinjecteddata;
+        }, self);
+
+        self.addBvinjecteddataParameter = function() {
+          self.bvinjecteddata.push({
+            "questionId": self.newQuestionId(),
+            "responseId": self.newResponseId()
+          });
+        };
+
+        self.removeBvinjecteddataParameter = function(param) {
+          self.bvinjecteddata.remove(param);
+        };
+      };
+
+      ko.applyBindings(new myViewModel);
+    </script>
+  </body>
+</html>

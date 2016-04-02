@@ -184,7 +184,9 @@
               bvcampaignId   = '&bvcampaignId=' + self.bvcampaignId(),
               bvinjecteddata = '';
 
-          if (self.bvinjecteddata().length > 0) {
+          console.debug('self.enabledBvinjecteddata()', self.enabledBvinjecteddata());
+
+          if (self.bvinjecteddata().length > 0 && self.enabledBvinjecteddata()) {
             let params = self.bvinjecteddata(),
                 pairs = {};
             // bvinjecteddata = '&bvinjecteddata=' + encodeURIComponent('{' + JSON.stringify(params) + '}');

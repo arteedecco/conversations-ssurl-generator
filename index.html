@@ -9,23 +9,23 @@
     <title>Conversations Submission Link Generator</title>
 
     <script src="./lib/js/jquery-2.2.2.js"></script>
-    <script src="./lib/js/bootstrap.min.js"></script>
+    <script src="./lib/bootstrap-3.3.6-dist/js/bootstrap.js"></script>
     <script src="./lib/js/knockout-3.4.0.js"></script>
-    <link href="./lib/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./lib/bootstrap-3.3.6-dist/css/bootstrap.css" rel="stylesheet">
 
   </head>
   <body>
 
     <div class="container">
 
-      <div class="jumbotron">
+      <div>
         <h1>Submission Link Generator</h1>
         <p>A web-based tool that allows you to generate perfectly formatted submission links for Conversations.</p>
-        
         <a style="word-break: break-all;" data-bind="attr: { href: ssurl }">
-          <span data-bind="text: ssurl"></span>
+          <span data-bind="text: ssurl">Submission link</span>
         </a>
-
+      </div>
+      <div>
         <h2>Config</h2>
         <form class="form-horizontal">
 
@@ -135,6 +135,25 @@
 
     </div><!-- end container -->
 
+    <div id="crashAndBurn" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Modal title</h4>
+          </div>
+          <div class="modal-body">
+            <p>One fine body&hellip;</p>
+            <img src="./img/goose.gif" alt="Crash and burn huh Mav?">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
     <script type="text/html" id="bvinjecteddata-template">
       <form class="form-inline">
         <div class="col-sm-offset-2 form-group" >
@@ -146,6 +165,14 @@
     </script>
 
     <script>
+      // Class to represent a data pair to be injected via data injection
+      function BvInjectedDataPair(questionId, responseId) {
+          var self = this;
+          self.questionId = ko.observable(questionId);
+          self.responseId = ko.observable(responseId);
+      }
+
+
       function myViewModel() {
         var self = this;
 
@@ -165,10 +192,7 @@
 
         self.enabledBvinjecteddata = ko.observable(true); 
         self.bvinjecteddata = ko.observableArray([
-          {
-            questionId: 'IncentivizedReview',
-            responseId: 'True'
-          }
+          new BvInjectedDataPair("IncentivizedReview", "True")
         ]);
 
         self.ssurl          = ko.computed(function() {
@@ -184,28 +208,27 @@
               bvcampaignId   = '&bvcampaignId=' + self.bvcampaignId(),
               bvinjecteddata = '';
 
-          console.debug('self.enabledBvinjecteddata()', self.enabledBvinjecteddata());
-
+          // NOTE, right now this code allows duplicates... maybe we don't want that. After all
+          // A submission form can never have more than one question with the same QuestionID
           if (self.bvinjecteddata().length > 0 && self.enabledBvinjecteddata()) {
             let params = self.bvinjecteddata(),
-                pairs = {};
-            // bvinjecteddata = '&bvinjecteddata=' + encodeURIComponent('{' + JSON.stringify(params) + '}');
+                pairs = "{";
             params.forEach(function(param, index, data) {
-              console.debug('index:',index, 'param:',param, 'data:', data);
-              pairs[param.questionId] = param.responseId;
+              pairs += '"' + param.questionId + '"' + ':' + '"' + param.responseId + '"' + ',';
             });
-            bvinjecteddata = '&bvinjecteddata=' + encodeURIComponent(JSON.stringify(pairs));
-            console.debug(bvinjecteddata);
+            pairs = pairs.substr(0, pairs.length - 1) +  "}";
+            bvinjecteddata = '&bvinjecteddata=' + encodeURIComponent(pairs);
+            console.debug('self.bvinjecteddata():', self.bvinjecteddata());
           }
 
           return protocol + domain + environment + 'static/' + instance + deploymentzone + locale + resource + bvaction + bvproductId + bvcampaignId + bvinjecteddata;
-        }, self);
+        });
 
         self.addBvinjecteddataParameter = function() {
           self.bvinjecteddata.push({
             "questionId": self.newQuestionId(),
             "responseId": self.newResponseId()
-          });
+          });  
         };
 
         self.removeBvinjecteddataParameter = function(param) {

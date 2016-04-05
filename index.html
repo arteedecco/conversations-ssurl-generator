@@ -18,7 +18,7 @@
 
     <div class="container">
 
-      <div>
+      <div class="page-header">
         <h1>Submission Link Generator</h1>
         <p>A web-based tool that allows you to generate perfectly formatted submission links for Conversations.</p>
         <a style="word-break: break-all;" data-bind="attr: { href: ssurl }">
@@ -56,21 +56,21 @@
           <div class="form-group">
             <label for="inputInstance" class="col-sm-2 control-label">Instance:</label>
             <div class="col-sm-10">
-              <input type="text" class="form-control" id="inputInstance" name="instance" placeholder="ExampleClient" data-bind="value: instance, valueUpdate: 'afterkeydown'">
+              <input type="text" class="form-control" id="inputInstance" name="instance" placeholder="ExampleClient" data-bind="textInput: instance">
             </div>
           </div>
 
           <div class="form-group">
             <label for="inputDeploymentzone" class="col-sm-2 control-label">Deployment Zone:</label>
             <div class="col-sm-10">
-              <input type="text" class="form-control" id="inputDeploymentzone" name="deploymentzone" placeholder="Main%20Site" data-bind="value: deploymentzone, valueUpdate: 'afterkeydown'">
+              <input type="text" class="form-control" id="inputDeploymentzone" name="deploymentzone" placeholder="Main%20Site" data-bind="textInput: deploymentzone">
             </div>
           </div>
 
           <div class="form-group">
             <label for="inputLocale" class="col-sm-2 control-label">Locale:</label>
             <div class="col-sm-10">
-              <input type="text" class="form-control" id="inputLocale" name="locale" placeholder="en_US" data-bind="value: locale, valueUpdate: 'afterkeydown'">
+              <input type="text" class="form-control" id="inputLocale" name="locale" placeholder="en_US" data-bind="textInput: locale">
             </div>
           </div>
 
@@ -89,14 +89,14 @@
           <div class="form-group">
             <label for="inputBvproductId" class="col-sm-2 control-label">Locale:</label>
             <div class="col-sm-10">
-              <input type="text" class="form-control" id="inputBvproductId" name="bvproductId" placeholder="product1" data-bind="value: bvproductId, valueUpdate: 'afterkeydown'">
+              <input type="text" class="form-control" id="inputBvproductId" name="bvproductId" placeholder="product1" data-bind="textInput: bvproductId">
             </div>
           </div>
 
           <div class="form-group">
             <label for="inputBvcampaignId" class="col-sm-2 control-label">Locale:</label>
             <div class="col-sm-10">
-              <input type="text" class="form-control" id="inputBvcampaignId" name="bvcampaignId" placeholder="Example_Campaign_Id" data-bind="value: bvcampaignId, valueUpdate: 'afterkeydown'">
+              <input type="text" class="form-control" id="inputBvcampaignId" name="bvcampaignId" placeholder="Example_Campaign_Id" data-bind="textInput: bvcampaignId">
             </div>
           </div>
 
@@ -116,13 +116,19 @@
           <form class="form-inline">
 
             <div class="col-sm-offset-2  form-group">
-              <input type="text" class="form-control" placeholder="QuestionID" data-bind="value: newQuestionId, valueUpdate: 'afterkeydown'">
-              <input type="text" class="form-control" placeholder="ResponseID" data-bind="value: newResponseId, valueUpdate: 'afterkeydown'">
-              <button type="button" class="btn btn-primary btn-sm" data-bind="click: addBvinjecteddataParameter">add</button>
+              <input type="text" class="form-control" placeholder="QuestionID" data-bind="textInput: newQuestionId">
+              <input type="text" class="form-control" placeholder="AnswerID" data-bind="textInput: newAnswerId">
+              <button type="button" class="btn btn-primary btn-sm" data-bind="click: addBvinjecteddataParameter, enable: !dataPairExists()">add</button>
             </div>
 
           </form>
 
+          <div class="alert alert-danger col-sm-offset-2" role="alert" data-bind="visible: dataPairExists()">
+            <strong>Duplicate!</strong> This question and answer combo has already been included for data injection.
+          </div>
+          
+          <div class="clearfix"></div>
+  
           <hr>
 
           <div data-bind="template: { name: 'bvinjecteddata-template', foreach: bvinjecteddata }">
@@ -157,8 +163,8 @@
     <script type="text/html" id="bvinjecteddata-template">
       <form class="form-inline">
         <div class="col-sm-offset-2 form-group" >
-          <input type="text" class="form-control" data-bind="value: questionId, valueUpdate: 'afterkeydown'">
-          <input type="text" class="form-control" data-bind="value: responseId, valueUpdate: 'afterkeydown'">
+          <input type="text" class="form-control" data-bind="textInput: questionId">
+          <input type="text" class="form-control" data-bind="textInput: answerId">
           <button type="button" class="btn btn-danger btn-sm" data-bind="click: $parent.removeBvinjecteddataParameter">remove</button>    
         </div>
       </form>
@@ -166,10 +172,10 @@
 
     <script>
       // Class to represent a data pair to be injected via data injection
-      function BvInjectedDataPair(questionId, responseId) {
+      function BvInjectedDataPair(questionId, answerId) {
           var self = this;
           self.questionId = ko.observable(questionId);
-          self.responseId = ko.observable(responseId);
+          self.answerId = ko.observable(answerId);
       }
 
 
@@ -188,9 +194,9 @@
         self.bvcampaignId   = ko.observable('Example_Campaign_Id');
 
         self.newQuestionId  = ko.observable();
-        self.newResponseId  = ko.observable();
+        self.newAnswerId  = ko.observable();
 
-        self.enabledBvinjecteddata = ko.observable(true); 
+        self.enabledBvinjecteddata = ko.observable(true);
         self.bvinjecteddata = ko.observableArray([
           new BvInjectedDataPair("IncentivizedReview", "True")
         ]);
@@ -208,31 +214,49 @@
               bvcampaignId   = '&bvcampaignId=' + self.bvcampaignId(),
               bvinjecteddata = '';
 
-          // NOTE, right now this code allows duplicates... maybe we don't want that. After all
-          // A submission form can never have more than one question with the same QuestionID
+          // Do not allow duplicate bvinjecteddata param pairs.
+          // If either QuestionId or AnswerId change then update, 
+          // but if identical, do not update.
           if (self.bvinjecteddata().length > 0 && self.enabledBvinjecteddata()) {
-            let params = self.bvinjecteddata(),
-                pairs = "{";
-            params.forEach(function(param, index, data) {
-              pairs += '"' + param.questionId + '"' + ':' + '"' + param.responseId + '"' + ',';
+            let dataPairs = {};
+            self.bvinjecteddata().forEach(function(dataPair, index, data) {
+              dataPairs[dataPair.questionId()] = dataPair.answerId();
             });
-            pairs = pairs.substr(0, pairs.length - 1) +  "}";
-            bvinjecteddata = '&bvinjecteddata=' + encodeURIComponent(pairs);
+            bvinjecteddata = '&bvinjecteddata=' + encodeURIComponent(JSON.stringify(dataPairs));
             console.debug('self.bvinjecteddata():', self.bvinjecteddata());
           }
 
           return protocol + domain + environment + 'static/' + instance + deploymentzone + locale + resource + bvaction + bvproductId + bvcampaignId + bvinjecteddata;
         });
+        self.dataPairExists = function() {
+          let exists = false;
+          self.bvinjecteddata().forEach(function(dataPair, index, data) {
+            console.debug('PRE', 'exists:', exists, 'dataPair.questionId():', dataPair.questionId(), 'self.newQuestionId():', self.newQuestionId(), 'dataPair.answerId():', dataPair.answerId(), 'self.newAnswerId():', self.newAnswerId());
 
-        self.addBvinjecteddataParameter = function() {
-          self.bvinjecteddata.push({
-            "questionId": self.newQuestionId(),
-            "responseId": self.newResponseId()
-          });  
+            if ((dataPair.questionId() === self.newQuestionId()) && (dataPair.answerId() === self.newAnswerId()))
+              exists = true;
+            else
+              exists = false;
+
+            console.debug('POST', 'exists:', exists, 'dataPair.questionId():', dataPair.questionId(), 'self.newQuestionId():', self.newQuestionId(), 'dataPair.answerId():', dataPair.answerId(), 'self.newAnswerId():', self.newAnswerId());
+          });
+          
+          return exists;
         };
 
-        self.removeBvinjecteddataParameter = function(param) {
-          self.bvinjecteddata.remove(param);
+        self.addBvinjecteddataParameter = function() {
+          // If doesn't already exist, add it
+          if (!self.dataPairExists()) {
+            self.bvinjecteddata.push(
+              new BvInjectedDataPair(self.newQuestionId(), self.newAnswerId())
+            );
+            self.newQuestionId('');
+            self.newAnswerId('');
+          }
+        };
+
+        self.removeBvinjecteddataParameter = function(dataPair) {
+          self.bvinjecteddata.remove(dataPair);
         };
       };
 

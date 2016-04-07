@@ -23,6 +23,7 @@ Please report any bugs.
 - Add deep linking support
 
 ## Revisions
+- Added a 50px margin to the bottom of the .container div. Didn't like that the last form element rested right on the bottom of the browser window (style. "meh").
 - Corrected typo in label for Product Family ID in generic review submission section of form
 - Added prevent close option to generic review submission (doesn't look like it's functional for regular submission)
 - Added generic review submission capability

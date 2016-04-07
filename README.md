@@ -1,6 +1,10 @@
 # conversations-ssurl-generator
 A standalone web-based app to generate perfectly formatted submission links ("ssURLs") for Bazaarvoice Conversations
 
+## Current Scope:
+- Hosted Authentication
+- Ratings & Reviews
+
 ## How to use this app:
 1. Simply clone the project (i.e. "repo" or "repository") to a local directory
 2. drag-n-drop the index.html file into your favorite browser

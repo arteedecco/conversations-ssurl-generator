@@ -15,7 +15,7 @@ git clone https://github.com/arteedecco/conversations-ssurl-generator.git
 Please report any bugs.
 
 ## To-Do's
-- [√] Add generic review submission support
+- [ √ ] Add generic review submission support
 - Add deep linking support
 
 ## Revisions

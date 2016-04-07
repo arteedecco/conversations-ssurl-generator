@@ -26,7 +26,7 @@
 
       <div class="page-header">
         <h1>Submission Link Generator</h1>
-        <p>A web-based tool that allows you to generate perfectly formatted submission links for Conversations.</p>
+        <p>A web-based tool that allows you to generate perfectly formatted submission links for Conversations. Created by <a href="#" id="easteregg" data-toggle="modal" data-target="#crashAndBurn">David Murray</a></p>
         <a style="word-break: break-all;" data-bind="attr: { href: ssurl }">
           <span data-bind="text: ssurl">Submission link</span>
         </a>
@@ -190,20 +190,19 @@
 
     </div><!-- end container -->
 
-    <div id="crashAndBurn" class="modal fade" tabindex="-1" role="dialog">
+
+    <div class="modal fade" id="crashAndBurn" tabindex="-1" role="dialog">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">Modal title</h4>
+            <h4 class="modal-title"><quote>Goose!!!</quote></h4>
           </div>
           <div class="modal-body">
-            <p>One fine body&hellip;</p>
-            <img src="./img/goose.gif" alt="Crash and burn huh Mav?">
+            <img src="./img/goose.gif" width="100%">
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+            <button type="button" class="btn btn-primary" data-dismiss="modal"><quote>Eject! Eject! Eject!</quote></button>
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
@@ -220,6 +219,11 @@
     </script>
 
     <script>
+      // easteregg
+      (function($) {
+        console.debug('jQuery loaded with version "' + $.fn.jquery + '"');
+      })(jQuery);
+
       // Class to represent a data pair to be injected via data injection
       function BvInjectedDataPair(questionId, answerId) {
           var self = this;
@@ -279,7 +283,6 @@
               dataPairs[dataPair.questionId()] = dataPair.answerId();
             });
             bvinjecteddata = '&bvinjecteddata=' + encodeURIComponent(JSON.stringify(dataPairs));
-            console.debug('self.bvinjecteddata():', self.bvinjecteddata());
           }
 
           return protocol + domain + environment + 'static/' + instance + deploymentzone + locale + resource + bvaction + bvproductId + bvcategoryId + bvfamilyProductId + bvcampaignId + bvpreventClose + bvinjecteddata;
@@ -287,14 +290,10 @@
         self.dataPairExists = function() {
           let exists = false;
           self.bvinjecteddata().forEach(function(dataPair, index, data) {
-            console.debug('PRE', 'exists:', exists, 'dataPair.questionId():', dataPair.questionId(), 'self.newQuestionId():', self.newQuestionId(), 'dataPair.answerId():', dataPair.answerId(), 'self.newAnswerId():', self.newAnswerId());
-
             if ((dataPair.questionId() === self.newQuestionId()) && (dataPair.answerId() === self.newAnswerId()))
               exists = true;
             else
               exists = false;
-
-            console.debug('POST', 'exists:', exists, 'dataPair.questionId():', dataPair.questionId(), 'self.newQuestionId():', self.newQuestionId(), 'dataPair.answerId():', dataPair.answerId(), 'self.newAnswerId():', self.newAnswerId());
           });
           
           return exists;

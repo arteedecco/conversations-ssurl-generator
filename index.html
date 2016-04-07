@@ -81,15 +81,46 @@
                 <input type="radio" name="bvactionOptions" id="bvaction_submit" value="rr_submit_review" data-bind="checked: bvaction"> normal submission
               </label>
               <label for="bvaction_generic" class="radio-inline">
-                <input type="radio" name="bvactionOptions" id="bvaction_generic" value="rr_submit_generic" disabled data-bind="checked: bvaction"> generic review submission (product picker) [future feature]
+                <input type="radio" name="bvactionOptions" id="bvaction_generic" value="rr_submit_generic" data-bind="checked: bvaction"> generic review submission (product picker)
               </label>
             </div>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" data-bind="visible: bvaction() === 'rr_submit_review'">
             <label for="inputBvproductId" class="col-sm-2 control-label">Product ID / ExternalId:</label>
             <div class="col-sm-10">
               <input type="text" class="form-control" id="inputBvproductId" name="bvproductId" placeholder="product1" data-bind="textInput: bvproductId">
+            </div>
+          </div>
+
+          <div data-bind="visible: bvaction() === 'rr_submit_generic'">
+            <div class="form-group">
+              <label class="col-sm-2 control-label">Filter by:</label>
+              <div class="col-sm-10">
+                <label for="all_filter" class="radio-inline">
+                  <input type="radio" name="genericFilterOptions" id="all_filter" value="all" data-bind="checked: genericFilter"> all products
+                </label>
+                <label for="category_filter" class="radio-inline">
+                  <input type="radio" name="genericFilterOptions" id="category_filter" value="category" data-bind="checked: genericFilter"> category
+                </label>
+                <label for="productFamily_filter" class="radio-inline">
+                  <input type="radio" name="genericFilterOptions" id="productFamily_filter" value="productFamily" data-bind="checked: genericFilter"> product family
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group" data-bind="visible: genericFilter() === 'category'">
+              <label for="inputBvcategoryId" class="col-sm-3 control-label">Category ID / Category ExternalId:</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="inputBvcategoryId" name="bvcategoryId" placeholder="category1" data-bind="textInput: bvcategoryId">
+              </div>
+            </div>
+
+            <div class="form-group" data-bind="visible: genericFilter() === 'productFamily'">
+              <label for="inputBvfamilyProductId" class="col-sm-3 control-label">Category ID / Category ExternalId:</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="inputBvfamilyProductId" name="bvfamilyProductId" placeholder="productFamily1" data-bind="textInput: bvfamilyProductId">
+              </div>
             </div>
           </div>
 
@@ -182,37 +213,42 @@
       function myViewModel() {
         var self = this;
 
-        self.protocol       = ko.observable('http');
-        self.domain         = ko.observable('display.ugc.bazaarvoice.com');
-        self.environment    = ko.observable('bvstaging');
-        self.instance       = ko.observable('Kleenex');
-        self.deploymentzone = ko.observable('KleenexCRM');
-        self.locale         = ko.observable('en_US');
-        self.resource       = ko.observable('container.htm');
-        self.bvaction      = ko.observable('rr_submit_review');
-        self.bvproductId    = ko.observable('product1');
-        self.bvcampaignId   = ko.observable('Example_Campaign_Id');
+        self.protocol          = ko.observable('http');
+        self.domain            = ko.observable('display.ugc.bazaarvoice.com');
+        self.environment       = ko.observable('bvstaging');
+        self.instance          = ko.observable('Kleenex');
+        self.deploymentzone    = ko.observable('KleenexCRM');
+        self.locale            = ko.observable('en_US');
+        self.resource          = ko.observable('container.htm');
+        self.bvaction          = ko.observable('rr_submit_review');
+        self.bvproductId       = ko.observable('product1');
+        self.genericFilter     = ko.observable('all');
+        self.bvcategoryId      = ko.observable('Replace With Valid Category ExternalId');
+        self.bvfamilyProductId = ko.observable('Replace With Valid Product Family ID');
+        self.bvcampaignId      = ko.observable('Example_Campaign_Id');
 
-        self.newQuestionId  = ko.observable();
-        self.newAnswerId  = ko.observable();
+        self.newQuestionId     = ko.observable();
+        self.newAnswerId       = ko.observable();
 
         self.enabledBvinjecteddata = ko.observable(true);
         self.bvinjecteddata = ko.observableArray([
           new BvInjectedDataPair("IncentivizedReview", "True")
         ]);
 
-        self.ssurl          = ko.computed(function() {
-          let protocol       = self.protocol() + '://',
-              domain         = self.domain() + '/',
-              environment    = (self.environment() === "") ? "" : self.environment() + '/',
-              instance       = self.instance() + '/',
-              deploymentzone = (self.deploymentzone() === "") ? "Main%20Site" + '/' : self.deploymentzone() + '/',
-              locale         = (self.locale() === "") ? "en_US" + '/' : self.locale() + '/',
-              resource       = self.resource() + '?',
-              bvaction      = 'bvaction=' + self.bvaction(),
-              bvproductId    = '&bvproductId=' + self.bvproductId(),
-              bvcampaignId   = '&bvcampaignId=' + self.bvcampaignId(),
-              bvinjecteddata = '';
+        self.ssurl = ko.computed(function() {
+          let protocol          = self.protocol() + '://',
+              domain            = self.domain() + '/',
+              environment       = (self.environment() === "") ? "" : self.environment() + '/',
+              instance          = self.instance() + '/',
+              deploymentzone    = (self.deploymentzone() === "") ? "Main%20Site" + '/' : self.deploymentzone() + '/',
+              locale            = (self.locale() === "") ? "en_US" + '/' : self.locale() + '/',
+              resource          = self.resource() + '?',
+              bvaction          = 'bvaction=' + self.bvaction(),
+              bvproductId       = (self.bvproductId() && self.bvaction() === 'rr_submit_review') ? '&bvproductId=' + self.bvproductId() : '',
+              bvcategoryId      = (self.bvcategoryId() && self.bvaction() === 'rr_submit_generic' && self.genericFilter() === 'category') ? '&bvcategoryId=' + encodeURIComponent(self.bvcategoryId()) : '',
+              bvfamilyProductId = (self.bvfamilyProductId() && self.bvaction() === 'rr_submit_generic' && self.genericFilter() === 'productFamily') ? '&bvfamilyProductId=' + encodeURIComponent(self.bvfamilyProductId()) : '',
+              bvcampaignId      = '&bvcampaignId=' + self.bvcampaignId(),
+              bvinjecteddata    = '';
 
           // Do not allow duplicate bvinjecteddata param pairs.
           // If either QuestionId or AnswerId change then update, 
@@ -226,7 +262,7 @@
             console.debug('self.bvinjecteddata():', self.bvinjecteddata());
           }
 
-          return protocol + domain + environment + 'static/' + instance + deploymentzone + locale + resource + bvaction + bvproductId + bvcampaignId + bvinjecteddata;
+          return protocol + domain + environment + 'static/' + instance + deploymentzone + locale + resource + bvaction + bvproductId + bvcategoryId + bvfamilyProductId + bvcampaignId + bvinjecteddata;
         });
         self.dataPairExists = function() {
           let exists = false;

@@ -118,7 +118,7 @@
             <div class="col-sm-offset-2  form-group">
               <input type="text" class="form-control" placeholder="QuestionID" data-bind="textInput: newQuestionId">
               <input type="text" class="form-control" placeholder="AnswerID" data-bind="textInput: newAnswerId">
-              <button type="button" class="btn btn-primary btn-sm" data-bind="click: addBvinjecteddataParameter, enable: !dataPairExists()">add</button>
+              <button type="button" class="btn btn-primary btn-sm" data-bind="click: addBvinjecteddataParameter, enable: !dataPairExists() && newQuestionId() && newAnswerId()">add</button>
             </div>
 
           </form>
@@ -246,7 +246,7 @@
 
         self.addBvinjecteddataParameter = function() {
           // If doesn't already exist, add it
-          if (!self.dataPairExists()) {
+          if (!self.dataPairExists() && self.newQuestionId() && self.newAnswerId()) {
             self.bvinjecteddata.push(
               new BvInjectedDataPair(self.newQuestionId(), self.newAnswerId())
             );

@@ -5,10 +5,16 @@ A standalone web-based app to generate perfectly formatted submission links ("ss
 - Hosted Authentication
 - Ratings & Reviews
 
-## How to use this app:
+## How to use this app (Mac and *nix users, assuming you have `git` installed):
 1. Simply clone the project (i.e. "repo" or "repository") to a local directory
 2. drag-n-drop the index.html file into your favorite browser
 3. Enjoy!
+\* note for Windows users. Step 1: Get a Mac or a Linux machine! :) Or see below for alternative steps.
+
+## _Alternative_ How to use this app (the dreaded Windows user):
+This can work for either Mac or Windows, but it's easiest to just download a free `git` desktop manager. That way you can forego needing to run commands from a terminal window.
+- Github offers one: https://desktop.github.com/
+- Atlassian also offers one: https://www.sourcetreeapp.com/
 
 ## How to clone the repo?
 From your terminal (command line)

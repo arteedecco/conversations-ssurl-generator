@@ -15,6 +15,7 @@ git clone https://github.com/arteedecco/conversations-ssurl-generator.git
 Please report any bugs.
 
 ## Revisions
+- Fixed form element labels
 - Only allow users to enter unique data pairs to inject. In other words we don't want users entering duplicate `question=value` combinations since all submission form quesiton ids are unique
 - Added validation to the add new question / answer input boxes by adding an inline alert warning if a duplicate combination is entered
 - Disable the "Add" button if duplicate combination is entered

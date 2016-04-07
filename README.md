@@ -19,6 +19,7 @@ Please report any bugs.
 - Add deep linking support
 
 ## Revisions
+- Added prevent close option to generic review submission (doesn't look like it's functional for regular submission)
 - Added generic review submission capability
 - Fixed bug with `bvproductId` parameter which had a typo previously in the generated URL: `vproductId` (missing the leading 'b' char)
 - Added detection of empty fields for data injection pairs, only enable the "Add" button if both Question and Answer text input fields contain content (not blank)

@@ -6,14 +6,18 @@ A standalone web-based app to generate perfectly formatted submission links ("ss
 - Ratings & Reviews
 
 ## How to use this app (Mac and *nix users, assuming you have `git` installed):
-1. Simply clone the project (i.e. "repo" or "repository") to a local directory
-2. drag-n-drop the index.html file into your favorite browser
-3. Enjoy!
+1. Make sure git is installed on your command line `git --version`, should give you something like `git version 2.5.3`
+2. If not, install git: https://git-scm.com/
+3. Simply clone the project (i.e. "repo" or "repository") to a local directory
+4. drag-n-drop the index.html file into your favorite browser
+5. Enjoy!
 
 For Windows users. Step 1: Get a Mac or a Linux machine! :) Or see below for alternative steps.
 
 ## _Alternative_ How to use this app (the dreaded Windows user):
-This can work for either Mac or Windows, but it's easiest to just download a free `git` desktop manager. That way you can forego needing to run commands from a terminal window.
+This can work for either Mac or Windows
+1. Ensure `git` is installed first (see above + Google search)
+2. It's easiest to just download a free `git` desktop manager. That way you can forego needing to run commands from a terminal window.
 - Github offers one: https://desktop.github.com/
 - Atlassian also offers one: https://www.sourcetreeapp.com/
 

@@ -16,10 +16,14 @@ For Windows users. Step 1: Get a Mac or a Linux machine! :) Or see below for alt
 
 ## _Alternative_ How to use this app (the dreaded Windows user):
 This can work for either Mac or Windows
+
 1. Ensure `git` is installed first (see above + Google search)
 2. It's easiest to just download a free `git` desktop manager. That way you can forego needing to run commands from a terminal window.
-- Github offers one: https://desktop.github.com/
-- Atlassian also offers one: https://www.sourcetreeapp.com/
+  - Github offers one: https://desktop.github.com/
+  - Atlassian also offers one: https://www.sourcetreeapp.com/
+3. Clone the repo:
+  - Github Desktop [how to clone](https://help.github.com/desktop/guides/contributing/cloning-a-repository-from-github-desktop/#cloning-repositories)
+  - Atlassian Sourcetree [how to clone](https://confluence.atlassian.com/bitbucket/clone-a-repository-223217891.html)
 
 ## How to clone the repo?
 From your terminal (command line)
